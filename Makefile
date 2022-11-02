@@ -11,7 +11,6 @@ stackoperations.o: stackoperations.cpp
 
 run: main.o stack.o stackoperations.o
 	g++ main.o stack.o stackoperations.o -o run
-	.\run
 
 clean:
 	rm *.o

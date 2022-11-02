@@ -66,13 +66,34 @@ void print (struct stack* p_s)
 
 void dump (struct stack* p_s)
 {
-    printf("DUMP\n");
+    printf("\nDUMP\n");
     printf("LENGTH_STACK: %d\n", LENGTH_STACK);
     printf("SIZE: %d\n", p_s->size);
+    printf("ERROR CODE: %d\n", (enum Errors) p_s->error);
+
+    switch(p_s->error)
+    {
+    case 0:
+        printf("NO_ERRORS\n");
+        break;
+    case 2:
+        printf("ERR_NULL_DATA\n");
+        break;
+    case 4:
+        printf("ERR_SIZE_OUT_LEFTRANGE\n");
+        break;
+    case 8:
+        printf("ERR_SIZE_OUT_RIGHTRANGE\n");
+        break;
+    default:
+        printf("ESTRANGE_ERROR\n");
+        break;
+    }
+    
     printf("№  value  adress\n");
     for (int i = 0; i < p_s->size; i++)
     {
-        printf("%d - %d - %p\n", i, p_s->data[i], &(p_s->data));
+        printf("%d - %d - %p\n", i, p_s->data[i], &(p_s->data[i]));
     }
 }
 

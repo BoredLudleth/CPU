@@ -21,20 +21,23 @@ void StackCheck (struct stack* p_s)
 {
     if (p_s->data == NULL)
     {
-        dump(p_s);
-        ERR_NULL_DATA;
+        p_s->error = 2;
     }
 
     if (p_s->size < 0)
     {
-        dump(p_s);
-        ERR_SIZE_OUT_LEFTRANGE;
+        p_s->error = 4;
     }
 
     if (p_s->size > LENGTH_STACK)
     {
+        p_s->error = 8;
+    }
+
+    if (p_s->error != 0)
+    {
         dump(p_s);
-        ERR_SIZE_OUT_RIGHTRANGE; 
+        exit(0);
     }
 }
 
@@ -51,53 +54,66 @@ void StackRead (struct stack* p_s)
         {
             scanf(TYPE_SPECIFIER, &zn);
             push(p_s, zn);
+            continue;
         }
 
         if (strcmp(command, "pop") == 0)
         {
             pop(p_s);
+            continue;
         }
 
         if (strcmp(command, "add") == 0)
         {
             add(p_s);
+            continue;
         }
 
         if (strcmp(command, "sub") == 0)
         {
             sub(p_s);
+            continue;
         }
 
         if (strcmp(command, "mul") == 0)
         {
             mul(p_s);
+            continue;
         }
 
         if (strcmp(command, "div") == 0)
         {
             div(p_s);
+            continue;
         }
 
         if (strcmp(command, "out") == 0)
         {
             out(p_s);
+            continue;
         }
         
         if (strcmp(command, "print") == 0)
         {
             print(p_s);
+            continue;
         }
 
         if (strcmp(command, "dump") == 0)
         {
             dump(p_s);
+            continue;
         }
 
         if (strcmp(command, "hlt") == 0)
         {
             hlt(p_s);
+            continue;
         } else {
             printf("Undefined comand. Try again.\n");
+            char ch = ' ';
+            while ((ch = getchar()) != '\n')
+            continue;
         }
     }
 }
