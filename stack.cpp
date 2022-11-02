@@ -96,6 +96,8 @@ void StackRead (struct stack* p_s)
         if (strcmp(command, "hlt") == 0)
         {
             hlt(p_s);
+        } else {
+            printf("Undefined comand. Try again.\n");
         }
     }
 }
