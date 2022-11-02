@@ -1,16 +1,19 @@
+CC=g++
+CFLAGS=-c -Wall	
+
 all: run
 
 main.o: main.cpp
-	g++ -c main.cpp -o main.o
+	$(CC) $(CFLAGS) main.cpp -o main.o
 
 stack.o: stack.cpp
-	g++ -c stack.cpp -o stack.o
+	$(CC) $(CFLAGS) stack.cpp -o stack.o
 
 stackoperations.o: stackoperations.cpp
-	g++ -c stackoperations.cpp -o stackoperations.o
+	$(CC) $(CFLAGS) stackoperations.cpp -o stackoperations.o
 
 run: main.o stack.o stackoperations.o
-	g++ main.o stack.o stackoperations.o -o run
+	$(CC) main.o stack.o stackoperations.o -o run
 
 clean:
 	rm *.o

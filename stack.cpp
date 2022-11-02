@@ -5,6 +5,7 @@ void StackInit (struct stack* p_s)
 {
     p_s->size = 0;
     p_s->data = (type*) calloc (LENGTH_STACK, sizeof(int));
+    
     StackCheck (p_s);
 }
 
@@ -14,6 +15,7 @@ void StackDelete (struct stack* p_s)
     {
         p_s->data[i] = 0;
     }
+
     free(p_s->data);
 }
 
@@ -29,7 +31,7 @@ void StackCheck (struct stack* p_s)
         p_s->error = 4;
     }
 
-    if (p_s->size > LENGTH_STACK)
+    if (p_s->size >= LENGTH_STACK)
     {
         p_s->error = 8;
     }

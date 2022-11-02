@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <cstring>
 
-#define LENGTH_STACK 5
+#define LENGTH_STACK 100
 
 typedef int type;
 #define TYPE_SPECIFIER "%d"
@@ -20,15 +20,6 @@ enum Errors
     ERR_SIZE_OUT_LEFTRANGE = 4,
     ERR_SIZE_OUT_RIGHTRANGE = 8
 };
-
-// #define ERR_NULL_DATA printf("ERROR:ERR_NULL_DATA FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__); \
-//                       exit(0);
-
-// #define ERR_SIZE_OUT_LEFTRANGE printf("ERROR:FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__); \
-//                       exit(0);
-
-// #define ERR_SIZE_OUT_RIGHTRANGE printf("ERROR:FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__); \
-//                       exit(0);
 
 #define DBG printf("FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__);
 
