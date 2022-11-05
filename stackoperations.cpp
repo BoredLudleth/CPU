@@ -4,18 +4,22 @@
 void push (struct stack* p_s, int zn)
 {
     StackCheck (p_s);
-    p_s->data[p_s->size] = zn;
+
+    p_s->data[adressation(p_s->size)] = zn;
     p_s->size += 1;
+
     StackCheck (p_s);
 }
 
 type pop (struct stack* p_s)
 {
     StackCheck (p_s);
+
     p_s->size -= 1;
-    type x = p_s->data[p_s->size];
+    type x = p_s->data[adressation(p_s->size)];
 
     StackCheck (p_s);
+
     return x;
 }
 
@@ -67,7 +71,7 @@ void print (struct stack* p_s)
 void dump (struct stack* p_s)
 {
     printf("\nDUMP\n");
-    printf("LENGTH_STACK: %d\n", LENGTH_STACK);
+    printf("LENGTH_STACK: %d\n", p_s->lengthStack);
     printf("SIZE: %d\n", p_s->size);
     printf("ERROR CODE: %d\n", (enum Errors) p_s->error);
 
@@ -76,25 +80,37 @@ void dump (struct stack* p_s)
     case 0:
         printf("NO_ERRORS\n");
         break;
+
     case 2:
         printf("ERR_NULL_DATA\n");
         break;
+
     case 4:
+        printf("ERR_CANERY_CHANGED\n");
+        break;
+
+    case 8:
         printf("ERR_SIZE_OUT_LEFTRANGE\n");
         break;
-    case 8:
+
+    case 16:
         printf("ERR_SIZE_OUT_RIGHTRANGE\n");
         break;
+
     default:
-        printf("ESTRANGE_ERROR\n");
+        printf("STRANGE_ERROR\n");
         break;
     }
+
+    printf("ADRESS OF STACK: %p\n", p_s->data);
     
     printf("№  value  adress\n");
-    for (int i = 0; i < p_s->size; i++)
+    printf("CANNERY - %d - %p\n", p_s->data[0], &(p_s->data[0]));
+    for (int i = 0; i < p_s->lengthStack; i++)
     {
-        printf("%d - %d - %p\n", i, p_s->data[i], &(p_s->data[i]));
+        printf("%d - %d - %p\n", i, p_s->data[adressation(i)], &(p_s->data[adressation(i)]));
     }
+    printf("CANNERY - %d - %p\n", p_s->data[p_s->lengthStack + 1], &(p_s->data[p_s->lengthStack + 1]));
 }
 
 void hlt (struct stack* p_s)

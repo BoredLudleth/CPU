@@ -4,8 +4,12 @@
 void StackInit (struct stack* p_s) 
 {
     p_s->size = 0;
-    p_s->data = (type*) calloc (LENGTH_STACK, sizeof(int));
-    
+    printf("Enter max length of stack\n");
+    scanf("%d", &(p_s->lengthStack));
+    p_s->data = (type*) calloc (p_s->lengthStack + 2, sizeof(int)); //two extras for canneries
+    p_s->data[0] = CANNERY_VALUE;
+    p_s->data[(p_s->lengthStack) + 1] = CANNERY_VALUE;
+
     StackCheck (p_s);
 }
 
@@ -13,7 +17,7 @@ void StackDelete (struct stack* p_s)
 {
     for (int i = p_s->size; i > -1; i--)
     {
-        p_s->data[i] = 0;
+        p_s->data[adressation(i)] = 0;
     }
 
     free(p_s->data);
@@ -26,14 +30,19 @@ void StackCheck (struct stack* p_s)
         p_s->error = 2;
     }
 
-    if (p_s->size < 0)
+    if ((p_s->data[0] != CANNERY_VALUE) || (p_s->data[p_s->lengthStack + 1] != CANNERY_VALUE)) 
     {
         p_s->error = 4;
     }
 
-    if (p_s->size >= LENGTH_STACK)
+    if (adressation(p_s->size) < 0)
     {
         p_s->error = 8;
+    }
+
+    if (adressation(p_s->size) > (p_s->lengthStack + 1))
+    {
+        p_s->error = 16;
     }
 
     if (p_s->error != 0)
@@ -113,9 +122,17 @@ void StackRead (struct stack* p_s)
             continue;
         } else {
             printf("Undefined comand. Try again.\n");
+
             char ch = ' ';
             while ((ch = getchar()) != '\n')
-            continue;
+            {
+                continue;
+            }
         }
     }
+}
+
+int adressation (int size)
+{
+    return (1 + size);
 }
