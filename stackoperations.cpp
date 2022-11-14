@@ -1,11 +1,10 @@
 #include "stackoperations.hpp"
-#include "stack.hpp"
 
-void push (struct stack* p_s, int zn)
+void push (struct stack* p_s, type zn)
 {
     StackCheck (p_s);
 
-    p_s->data[adressation(p_s->size)] = zn;
+    p_s->data[p_s->size] = zn;
     p_s->size += 1;
 
     StackCheck (p_s);
@@ -16,7 +15,9 @@ type pop (struct stack* p_s)
     StackCheck (p_s);
 
     p_s->size -= 1;
-    type x = p_s->data[adressation(p_s->size)];
+    type x = p_s->data[p_s->size];
+    p_s->data[p_s->size] = 0;
+
 
     StackCheck (p_s);
 
@@ -57,25 +58,28 @@ void div (struct stack* p_s)
 
 void out (struct stack* p_s)
 {
-    printf("%d\n", pop(p_s));
+    printf(TYPE_SPECIFIER, pop(p_s));
+    printf("\n");
 }
 
-void print (struct stack* p_s)
+void print (struct stack s)
 {
-    for (int i = 0; i < p_s->size; i++)
+    for (int i = 0; i < s.size; i++)
     {
-        printf("%d - %d\n", i, p_s->data[i]);
+        printf("%d - ", i);
+        printf(TYPE_SPECIFIER, s.data[i]);
+        printf("\n");
     }
 }
 
-void dump (struct stack* p_s)
+void dump (struct stack s)
 {
     printf("\nDUMP\n");
-    printf("LENGTH_STACK: %d\n", p_s->lengthStack);
-    printf("SIZE: %d\n", p_s->size);
-    printf("ERROR CODE: %d\n", (enum Errors) p_s->error);
+    printf("LENGTH_STACK: %d\n", s.lengthStack);
+    printf("SIZE: %d\n", s.size);
+    printf("ERROR CODE: %d\n", (enum Errors) s.error);
 
-    switch(p_s->error)
+    switch(s.error)
     {
     case 0:
         printf("NO_ERRORS\n");
@@ -102,15 +106,20 @@ void dump (struct stack* p_s)
         break;
     }
 
-    printf("ADRESS OF STACK: %p\n", p_s->data);
+    printf("ADRESS OF STACK: %p\n", s.data);
     
     printf("№  value  adress\n");
-    printf("CANNERY - %d - %p\n", p_s->data[0], &(p_s->data[0]));
-    for (int i = 0; i < p_s->lengthStack; i++)
+
+    printf("CANARY - %d - %p\n", *((int*) (s.data) - 1), ((int*)(s.data) - 1));
+
+    for (int i = 0; i < s.lengthStack; i++)
     {
-        printf("%d - %d - %p\n", i, p_s->data[adressation(i)], &(p_s->data[adressation(i)]));
+        printf("%d - ", i);
+        printf(TYPE_SPECIFIER, s.data[i]);
+        printf(" - %p\n", &(s.data[i]));
     }
-    printf("CANNERY - %d - %p\n", p_s->data[p_s->lengthStack + 1], &(p_s->data[p_s->lengthStack + 1]));
+
+    printf("CANARY - %d - %p\n", *((int*) (s.data) + s.lengthStack), ((int*) (s.data) + s.lengthStack));
 }
 
 void hlt (struct stack* p_s)

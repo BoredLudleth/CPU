@@ -2,18 +2,20 @@
 #include <stdlib.h>
 #include <cstring>
 
-typedef int type;
-#define TYPE_SPECIFIER "%d"
-#define CANNERY_VALUE 58
+typedef float type;
+#define TYPE_SPECIFIER "%f"
+#define CANARY_VALUE 58
 
 #define DBG printf("FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__);
 
 struct stack 
 {
+    int canary_1;
     int size;
     type* data;
     int error;
     int lengthStack;
+    int canary_2;
 };
 
 enum Errors
@@ -32,5 +34,3 @@ void StackDelete (struct stack* p_s);
 void StackCheck(struct stack* p_s);
 
 void StackRead (struct stack* p_s);
-
-int adressation (int size);
