@@ -24,13 +24,14 @@ enum Errors
     ERR_NULL_DATA = 2,
     ERR_CANERY_CHANGED = 4,
     ERR_SIZE_OUT_LEFTRANGE = 8,
-    ERR_SIZE_OUT_RIGHTRANGE = 16
+    ERR_SIZE_OUT_RIGHTRANGE = 16, 
+    ERR_DIVIDE_ON_ZERO = 32
 };
 
-void StackInit (struct stack* p_s);
+void StackInit (struct stack* p_stack);
 
-void StackDelete (struct stack* p_s);
+void StackDelete (struct stack* p_stack);
 
-void StackCheck(struct stack* p_s);
+void StackCheck(struct stack* p_stack);
 
-void StackRead (struct stack* p_s);
+void StackRead (struct stack* p_stack);

@@ -2,11 +2,11 @@
 
 int main () 
 {
-    struct stack s = {};
-    struct stack* p_s = &s;
+    struct stack stack = {};
+    struct stack* p_stack = &stack;
 
-    StackInit(p_s);
-    StackRead(p_s);
+    StackInit(p_stack);
+    StackRead(p_stack);
 
     return 0;
 }

@@ -1,113 +1,113 @@
 #include "stackoperations.hpp"
 
-void StackInit (struct stack* p_s) 
+void StackInit (struct stack* p_stack) 
 {
-    p_s->size = 0;
+    p_stack->size = 0;
     printf("Enter max length of stack\n");
-    scanf("%d", &(p_s->lengthStack));
-    p_s->data = (type*) calloc ((p_s->lengthStack) * sizeof(type) + 2 * sizeof(int), 1); //two extras for canaries
+    scanf("%d", &(p_stack->lengthStack));
+    p_stack->data = (type*) calloc ((p_stack->lengthStack) * sizeof(type) + 2 * sizeof(int), 1); //two extras for canaries
 
-    int* temp_p = (int*) (p_s->data);
+    int* temp_p = (int*) (p_stack->data);
     temp_p[0] = CANARY_VALUE;
-    p_s->data = (type*) (temp_p + 1);
+    p_stack->data = (type*) (temp_p + 1);
 
-    temp_p = (int*)(p_s->data) + (p_s->lengthStack);
+    temp_p = (int*)(p_stack->data) + (p_stack->lengthStack);
     temp_p[0] = CANARY_VALUE;
 
-    p_s->canary_1 = CANARY_VALUE;
-    p_s->canary_2 = CANARY_VALUE; 
+    p_stack->canary_1 = CANARY_VALUE;
+    p_stack->canary_2 = CANARY_VALUE; 
 
-    StackCheck (p_s);
+    StackCheck (p_stack);
 }
 
-void StackDelete (struct stack* p_s)
+void StackDelete (struct stack* p_stack)
 {
-    for (int i = p_s->size; i > -1; i--)
+    for (int i = p_stack->size; i > -1; i--)
     {
-        p_s->data[i] = 0;
+        p_stack->data[i] = 0;
     }
 
-    free(p_s->data);
+    free(p_stack->data);
 }
 
-void StackCheck (struct stack* p_s) 
+void StackCheck (struct stack* p_stack) 
 {
-    if (p_s->data == NULL)
+    if (p_stack->data == NULL)
     {
-        p_s->error = 2;
+        p_stack->error = ERR_NULL_DATA;
     }
 
-    if ((*((int*)(p_s->data) - 1) != p_s->canary_1) || (*((int*)(p_s->data) + p_s->lengthStack) != p_s->canary_2)) 
+    if ((*((int*)(p_stack->data) - 1) != p_stack->canary_1) || (*((int*)(p_stack->data) + p_stack->lengthStack) != p_stack->canary_2)) 
     {
-        p_s->error = 4;
+        p_stack->error = ERR_CANERY_CHANGED;
     }
 
-    if (p_s->size < 0)
+    if (p_stack->size < 0)
     {
-        p_s->error = 8;
+        p_stack->error = ERR_SIZE_OUT_LEFTRANGE;
     }
 
-    if (p_s->size > (p_s->lengthStack))
+    if (p_stack->size > (p_stack->lengthStack))
     {
-        p_s->error = 16;
+        p_stack->error = ERR_SIZE_OUT_RIGHTRANGE;
     }
 
-    if (p_s->error != 0)
+    if (p_stack->error != NO_ERRORS)
     {
-        dump(*p_s);
+        dump(*p_stack);
         exit(0);
     }
 }
 
 
-void StackRead (struct stack* p_s)
+void StackRead (struct stack* p_stack)
 {
     char command[10] = {};
-    type zn = 0;
+    type value = 0;
 
     while (1)
     {
         scanf("%s", command);
         if (strcmp(command, "push") == 0)
         {
-            scanf(TYPE_SPECIFIER, &zn);
-            push(p_s, zn);
+            scanf(TYPE_SPECIFIER, &value);
+            push(p_stack, value);
             continue;
         } else if (strcmp(command, "pop") == 0)
         {
-            pop(p_s);
+            pop(p_stack);
             continue;
         } else if (strcmp(command, "add") == 0)
         {
-            add(p_s);
+            add(p_stack);
             continue;
         } else if (strcmp(command, "sub") == 0)
         {
-            sub(p_s);
+            sub(p_stack);
             continue;
         } else if (strcmp(command, "mul") == 0)
         {
-            mul(p_s);
+            mul(p_stack);
             continue;
         }else if (strcmp(command, "div") == 0)
         {
-            div(p_s);
+            div(p_stack);
             continue;
         }else if (strcmp(command, "out") == 0)
         {
-            out(p_s);
+            out(p_stack);
             continue;
         }else if (strcmp(command, "print") == 0)
         {
-            print(*p_s);
+            print(*p_stack);
             continue;
         }else if (strcmp(command, "dump") == 0)
         {
-            dump(*p_s);
+            dump(*p_stack);
             continue;
         } else if (strcmp(command, "hlt") == 0)
         {
-            hlt(p_s);
+            hlt(p_stack);
             continue;
         } else {
             printf("Undefined comand. Try again.\n");

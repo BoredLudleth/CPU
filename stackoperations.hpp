@@ -1,21 +1,21 @@
 #include "stack.hpp"
 
-void push(struct stack* p_s, type zn);
+void push(struct stack* p_stack, type value);
 
-type pop (struct stack* p_s);
+type pop (struct stack* p_stack);
 
-void add (struct stack* p_s);
+void add (struct stack* p_stack);
 
-void sub (struct stack* p_s);
+void sub (struct stack* p_stack);
 
-void mul (struct stack* p_s);
+void mul (struct stack* p_stack);
 
-void div (struct stack* p_s);
+void div (struct stack* p_stack);
 
-void out (struct stack* p_s);
+void out (struct stack* p_stack);
 
-void print (struct stack s);
+void print (struct stack stack);
 
-void dump (struct stack s);
+void dump (struct stack stack);
 
-void hlt (struct stack* p_s);
+void hlt (struct stack* p_stack);
