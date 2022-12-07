@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #define MAXNUMBEROFFILENAME 160
 
@@ -26,12 +27,13 @@ struct inputOutputFiles
     FILE* output;
     char* commands;
     int length_input;
-    char* allProgramm;
+    int* allProgramm;
     char* ProgrammCoded;
 };
 
 enum commands
 {
+    STACKERROR = 0,
     STACKPUSH  = 1,
     STACKPOP   = 2,
     STACKADD   = 3,
@@ -41,13 +43,23 @@ enum commands
     STACKOUT   = 7,
     STACKPRINT = 8,
     STACKDUMP  = 9,
-    STACKHLT   = 10,
-
+    STACKHLT   = 10, 
+    STACKJUMP  = 11,
+    STACKJB    = 12,
+    STACKJBE   = 13,
+    STACKJA    = 14,
+    STACKJAE   = 15,
+    STACKJE    = 16,
+    STACKJNE   = 17
 };
 
 void CoderInit (struct inputOutputFiles* p_files);
 
 int lenFile(FILE *text);
+
+char* inttoa(int n, char* s);
+
+void reverse(char* s);
 
 void Coding (struct inputOutputFiles* p_files);
 

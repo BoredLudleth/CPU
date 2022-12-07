@@ -2,20 +2,64 @@
 #include <stdlib.h>
 #include <cstring>
 
-typedef float type;
-#define TYPE_SPECIFIER "%f"
+typedef int type;
+#define TYPE_SPECIFIER "%d"
 #define CANARY_VALUE 58
+
+#define MAXNUMBEROFFILENAME 160
 
 #define DBG printf("FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__);
 
+struct registers 
+{
+    int ax = 0;
+
+    int bx = 0;
+
+    int cx = 0;
+
+    int dx = 0;
+};//структуру процессора
+
 struct stack 
 {
+    FILE* inputFile;
+    int sizeOfProgramm;
+    int* allProgramm;
     int canary_1;
     int size;
     type* data;
     int error;
     int lengthStack;
     int canary_2;
+
+    int cur = 0;
+
+    struct registers regs;
+};
+
+enum commands
+{
+    STACKERROR = 0,
+    STACKPUSH  = 1,
+    STACKPOP   = 2,
+    STACKADD   = 3,
+    STACKSUB   = 4,
+    STACKMUL   = 5,
+    STACKDIV   = 6,
+    STACKOUT   = 7,
+    STACKPRINT = 8,
+    STACKDUMP  = 9,
+    STACKHLT   = 10, 
+    STACKJUMP  = 11,
+    STACKJB    = 12,
+    STACKJBE   = 13,
+    STACKJA    = 14,
+    STACKJAE   = 15,
+    STACKJE    = 16,
+    STACKJNE   = 17,
+    STACKRPUSH = 18,
+    STACKRPOP  = 19
 };
 
 enum Errors
@@ -35,3 +79,7 @@ void StackDelete (struct stack* p_stack);
 void StackCheck(struct stack* p_stack);
 
 void StackRead (struct stack* p_stack);
+
+void StackDestructor(struct stack* p_stack);
+
+int lenFile(FILE *text);

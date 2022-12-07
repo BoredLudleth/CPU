@@ -10,6 +10,23 @@ void push (struct stack* p_stack, type value)
     StackCheck (p_stack);
 }
 
+void pushr(struct stack* p_stack, int indeficator)
+{
+    StackCheck (p_stack);
+    if (indeficator == 1)
+    {
+        push(p_stack, p_stack->regs.ax);
+    } else if (indeficator == 2) {
+        push(p_stack, p_stack->regs.bx);
+    } else if (indeficator == 3) {
+        push(p_stack, p_stack->regs.cx);
+    } else if (indeficator == 4) {
+        push(p_stack, p_stack->regs.dx);
+    } 
+
+    StackCheck (p_stack);
+}//добавить ошибку если обращаются на несуществующий индефикатор
+
 type pop (struct stack* p_stack)
 {
     StackCheck (p_stack);
@@ -22,6 +39,26 @@ type pop (struct stack* p_stack)
     StackCheck (p_stack);
 
     return x;
+}
+
+type popr (struct stack* p_stack, int indeficator)
+{
+    StackCheck (p_stack);
+    
+    if (indeficator == 1)
+    {
+        p_stack->regs.ax = pop(p_stack);
+    } else if (indeficator == 2) {
+        p_stack->regs.bx = pop(p_stack);
+    } else if (indeficator == 3) {
+        p_stack->regs.cx = pop(p_stack);
+    } else if (indeficator == 4) {
+        p_stack->regs.dx = pop(p_stack);
+    } 
+
+    StackCheck (p_stack);
+
+    return 1;
 }
 
 void add (struct stack* p_stack)
@@ -133,6 +170,106 @@ void dump (struct stack stack)
     }
 
     printf("CANARY - %d - %p\n", *((int*) (stack.data) + stack.lengthStack), ((int*) (stack.data) + stack.lengthStack));
+}
+
+void jump (struct stack* p_stack, int i)
+{
+    StackCheck (p_stack);
+
+    p_stack->cur = i;
+
+    StackCheck (p_stack);
+}
+
+void jb (struct stack* p_stack, int i)
+{
+    StackCheck (p_stack);
+
+    int a = pop (p_stack);
+    int b = pop (p_stack);
+
+    if (b < a)
+    {
+        jump(p_stack, i);
+    }
+
+    StackCheck (p_stack);
+}
+
+void jbe (struct stack* p_stack, int i)
+{
+    StackCheck (p_stack);
+
+    int a = pop (p_stack);
+    int b = pop (p_stack);
+
+    if (b <= a)
+    {
+        jump(p_stack, i);
+    }
+    
+    StackCheck (p_stack);
+}
+
+void ja (struct stack* p_stack, int i)
+{
+    StackCheck (p_stack);
+
+    int a = pop (p_stack);
+    int b = pop (p_stack);
+
+    if (b > a)
+    {
+        jump(p_stack, i);
+    }
+    
+    StackCheck (p_stack);
+}
+
+void jae (struct stack* p_stack, int i)
+
+{
+    StackCheck (p_stack);
+
+    int a = pop (p_stack);
+    int b = pop (p_stack);
+
+    if (b >= a)
+    {
+        jump(p_stack, i);
+    }
+    
+    StackCheck (p_stack);
+}
+
+void je (struct stack* p_stack, int i)
+{
+    StackCheck (p_stack);
+
+    int a = pop (p_stack);
+    int b = pop (p_stack);
+
+    if (b == a)
+    {
+        jump(p_stack, i);
+    }
+    
+    StackCheck (p_stack);
+}
+
+void jne (struct stack* p_stack, int i)
+{
+    StackCheck (p_stack);
+
+    int a = pop (p_stack);
+    int b = pop (p_stack);
+
+    if (b != a)
+    {
+        jump(p_stack, i);
+    }
+    
+    StackCheck (p_stack);
 }
 
 void hlt (struct stack* p_stack)
