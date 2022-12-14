@@ -141,6 +141,12 @@ void StackRead (struct stack* p_stack)
             p_stack->cur++;
             int reg = p_stack->allProgramm[p_stack->cur];
             popr(p_stack, reg);
+        // } else if (p_stack->allProgramm[p_stack->cur] == STACKCALL) {
+        //     p_stack->cur++;
+        //     int reg = p_stack->allProgramm[p_stack->cur];
+        //     call (p_stack, reg);
+        // } else if (p_stack->allProgramm[p_stack->cur] == STACKRET) {
+            // ret (p_stack);
         } else {
             printf("Undefined comand. Try again.\n");
             break;

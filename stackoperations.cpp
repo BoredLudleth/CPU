@@ -59,7 +59,7 @@ type popr (struct stack* p_stack, int indeficator)
     StackCheck (p_stack);
 
     return 1;
-}
+}//switch-case
 
 void add (struct stack* p_stack)
 {
@@ -271,6 +271,23 @@ void jne (struct stack* p_stack, int i)
     
     StackCheck (p_stack);
 }
+
+// void call (struct stack* p_stack, int i)
+// {
+//     StackCheck (p_stack);
+
+//     p_stack->cur = i;
+
+//     StackCheck (p_stack);
+// }
+
+// void ret (struct stack* cpu);
+// {
+//     StackCheck (cpu->p_stack);
+//     int a = pop (funct_stack);
+//     jump (p_stack, a);
+//     StackCheck (p_stack);
+// }
 
 void hlt (struct stack* p_stack)
 {

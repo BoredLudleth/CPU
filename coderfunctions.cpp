@@ -55,7 +55,8 @@ void PreCoding (struct inputOutputFiles* p_files)
         skipSpaces(p_files);
         sscanf (p_files->allProgramm, "%s", command);
         if (!strcmp (command, "jump") || !strcmp (command, "jb") || !strcmp (command, "jbe") 
-        || !strcmp (command, "ja") || !strcmp (command, "jae") || !strcmp (command, "je") || !strcmp (command, "jne"))
+        || !strcmp (command, "ja") || !strcmp (command, "jae") || !strcmp (command, "je") || !strcmp (command, "jne") 
+        || !strcmp (command, "call"))
         {
             p_files->allProgramm = strchr (p_files->allProgramm, '\n');
             curcommand += 1;
@@ -470,6 +471,37 @@ void Coding (struct inputOutputFiles* p_files)
                 printf("Undefined command in line %d\n", p_files->currentLine);
             }
             p_files->allProgramm = strchr(p_files->allProgramm, '\n');
+        } else if (!strcmp(command, "call")) {
+            p_files->commandsValue[i] = STACKCALL;
+            i++;
+
+            strcat (p_files->ProgrammCoded, "20");
+            p_files->allProgramm += 4;
+            skipSpaces (p_files);
+
+            char callValue[10] = " ";
+            sscanf (p_files->allProgramm, "%s", callValue);
+            p_files->allProgramm += strlen (callValue);
+
+            if (callValue[0] == ':' && checkNumber(callValue + 1))
+            {
+                char s[10] = " ";
+                strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(callValue + 1)], s));
+
+                p_files->commandsValue[i] = p_files->labels[atoi(callValue + 1)];
+                i++;
+            } else {
+                p_files->numberOfErrors++;
+                printf("ERR_RUB:Undefined command in line %d\n", p_files->currentLine);
+            }
+        } else if (!strcmp (command, "ret")) {
+            p_files->commandsValue[i] = STACKRET;
+            i++;
+
+            skipSpaces(p_files);
+
+            strcat(p_files->ProgrammCoded, "20");
+            p_files->allProgramm += 3;
         }
         else
         {

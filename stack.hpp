@@ -19,7 +19,14 @@ struct registers
     int cx = 0;
 
     int dx = 0;
-};//структуру процессора
+};
+
+// struct cpu
+// {
+//     struct stack mystack;
+//     struct stack functstack;
+//     struct registers regs;
+// };//структуру процессора{stack, regs, оперативка}
 
 struct stack 
 {
@@ -59,7 +66,9 @@ enum commands
     STACKJE    = 16,
     STACKJNE   = 17,
     STACKRPUSH = 18,
-    STACKRPOP  = 19
+    STACKRPOP  = 19, 
+    STACKCALL  = 20,
+    STACKRET   = 21
 };
 
 enum Errors

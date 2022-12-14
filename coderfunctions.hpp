@@ -97,7 +97,9 @@ enum commands
     STACKJE    = 16,
     STACKJNE   = 17,
     STACKRPUSH = 18,
-    STACKRPOP  = 19
+    STACKRPOP  = 19, 
+    STACKCALL  = 20,
+    STACKRET   = 21
 };
 
 void CoderInit (struct inputOutputFiles* p_files);

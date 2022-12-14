@@ -8,4 +8,4 @@ int main ()
     Coding (&files);
     OutputResults (&files);
     Destructor (&files);
-}
+}//добавить метки
