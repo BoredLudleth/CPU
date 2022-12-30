@@ -19,7 +19,7 @@ void CoderInit (struct inputOutputFiles* p_files)
     p_files->length_input = lenFile (p_files->input);
     p_files->allProgramm = (int*) calloc (p_files->length_input, sizeof(int));
     fread (p_files->allProgramm, sizeof(int), (size_t) (p_files->length_input), p_files->input);
-    p_files->ProgrammCoded = (char*) calloc (8 * (p_files->length_input) + 1, sizeof(char));
+    p_files->ProgrammCoded = (char*) calloc (8 * p_files->length_input, sizeof(char));
 }
 
 int lenFile(FILE *text)
@@ -30,128 +30,253 @@ int lenFile(FILE *text)
 
     return length;    
 }
+void PreCoding (struct inputOutputFiles* p_files)
+{
+    for (int i = 1; i <= NUMBEROFLABELS; i++)
+    {
+        p_files->labels[i - 1] = 0;
+    }
+    for (int i = 0; i < p_files->length_input; i++)
+    {
+        if (p_files->allProgramm[i] == STACKPUSH || p_files->allProgramm[i] == STACKRPUSH || p_files->allProgramm[i] == STACKRPOP)
+        {
+            i++;
+            continue;
+        }
+        if (p_files->allProgramm[i] == STACKJUMP || p_files->allProgramm[i] == STACKJB   ||
+            p_files->allProgramm[i] == STACKJBE  || p_files->allProgramm[i] == STACKJA   ||
+            p_files->allProgramm[i] == STACKJAE  || p_files->allProgramm[i] == STACKJE   ||
+            p_files->allProgramm[i] == STACKJNE  || p_files->allProgramm[i] == STACKCALL) 
+            {
+                i++;
+                int numoflabel = 1;
+                while (numoflabel <= NUMBEROFLABELS)
+                {
+                    if (p_files->labels[i - 1] == 0)
+                    {
+                        p_files->labels[i - 1] = p_files->allProgramm[i];
+                        break;
+                    }
+                }
+            }
+    }
+}
 
 void Coding (struct inputOutputFiles* p_files)
 {
-    for (int i = 0; i < p_files->length_input; i++)
+    for (int i = 0, line = 0; i < p_files->length_input; i++, line++)
     {
-        if (p_files->allProgramm[i] == STACKPUSH)
+        for (int j = 1; j <= NUMBEROFLABELS; j++)
         {
-            strcat (p_files->ProgrammCoded, "push ");
-            i++;
-            char num_str[15] = " ";
-            strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
-            strcat (p_files->ProgrammCoded, "\n");
-            num_str[0] = '\0';
+            if (p_files->labels[j - 1] == i && i != 0)
+            {
+                char numoflabel[5] = "";
+                strcat (p_files->ProgrammCoded, ":");
+                strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                strcat (p_files->ProgrammCoded, "\n");
+            }
         }
-        else if (p_files->allProgramm[i] == STACKPOP)
+        switch (p_files->allProgramm[i])
         {
-            strcat (p_files->ProgrammCoded, "pop\n");
-        }
-        else if (p_files->allProgramm[i] == STACKADD)
-        {
-            strcat (p_files->ProgrammCoded, "add\n");
-        }
-        else if (p_files->allProgramm[i] == STACKSUB)
-        {
-            strcat (p_files->ProgrammCoded, "sub\n");
-        }
-        else if (p_files->allProgramm[i] == STACKMUL)
-        {
-            strcat (p_files->ProgrammCoded, "mul\n");
-        }
-        else if (p_files->allProgramm[i] == STACKDIV)
-        {
-            strcat (p_files->ProgrammCoded, "div\n");
-        }
-        else if (p_files->allProgramm[i] == STACKOUT)
-        {
-            strcat (p_files->ProgrammCoded, "out\n");
-        }
-        else if (p_files->allProgramm[i] == STACKPRINT)
-        {
-            strcat (p_files->ProgrammCoded, "print\n");
-        }
-        else if (p_files->allProgramm[i] == STACKDUMP)
-        {
-            strcat (p_files->ProgrammCoded, "dump\n");
-        }
-        else if (p_files->allProgramm[i] == STACKHLT)
-        {
-            strcat (p_files->ProgrammCoded, "hlt\n");
-        }
-        else if (p_files->allProgramm[i] == STACKJUMP)
-        {
-            strcat (p_files->ProgrammCoded, "jump ");
+            case STACKPUSH:{ 
+                strcat(p_files->ProgrammCoded, "push ");
+                i++;
+                char num_str[15] = " ";
+                strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
+                strcat (p_files->ProgrammCoded, "\n");
+                num_str[0] = '\0';
+                break;
+                }
+            case STACKPOP: 
+                strcat (p_files->ProgrammCoded, "pop\n");
+                break;
+            case STACKADD: 
+                strcat (p_files->ProgrammCoded, "add\n");
+                break;
+            case STACKSUB: 
+                strcat (p_files->ProgrammCoded, "sub\n");
+                break;
+            case STACKMUL: 
+                strcat (p_files->ProgrammCoded, "mul\n");
+                break;
+            case STACKDIV: 
+                strcat (p_files->ProgrammCoded, "div\n");
+                break;
+            case STACKOUT: 
+                strcat (p_files->ProgrammCoded, "out\n");
+                break;
+            case STACKPRINT: 
+                strcat (p_files->ProgrammCoded, "print\n");
+                break;
+            case STACKDUMP: 
+                strcat (p_files->ProgrammCoded, "dump\n");
+                break;
+            case STACKHLT: 
+                strcat (p_files->ProgrammCoded, "hlt\n");
+                break;   
+            case STACKJUMP:{ 
+                strcat (p_files->ProgrammCoded, "jump ");
+                i++;
+                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                {
+                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    {
+                        char numoflabel[5] = "";
+                        strcat (p_files->ProgrammCoded, ":");
+                        strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                        strcat (p_files->ProgrammCoded, "\n");
+                    }
+                }
+                break;
+                } 
+            case STACKJB:{ 
+                strcat (p_files->ProgrammCoded, "jb ");
+                i++;
+                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                {
+                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    {
+                        char numoflabel[5] = "";
+                        strcat (p_files->ProgrammCoded, ":");
+                        strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                        strcat (p_files->ProgrammCoded, "\n");
+                    }
+                }
+                break; 
+                } 
+            case STACKJBE:{
+                strcat (p_files->ProgrammCoded, "jbe ");
+                i++;
+                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                {
+                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    {
+                        char numoflabel[5] = "";
+                        strcat (p_files->ProgrammCoded, ":");
+                        strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                        strcat (p_files->ProgrammCoded, "\n");
+                    }
+                }
+                break;
+                }  
+            case STACKJA:{
+                strcat (p_files->ProgrammCoded, "ja ");
+                i++;
+                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                {
+                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    {
+                        char numoflabel[5] = "";
+                        strcat (p_files->ProgrammCoded, ":");
+                        strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                        strcat (p_files->ProgrammCoded, "\n");
+                    }
+                }
+                break;
+                }    
+            case STACKJAE:{                 
+                strcat (p_files->ProgrammCoded, "jae ");
+                i++;
+                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                {
+                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    {
+                        char numoflabel[5] = "";
+                        strcat (p_files->ProgrammCoded, ":");
+                        strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                        strcat (p_files->ProgrammCoded, "\n");
+                    }
+                }
+                break; 
+                }
+            case STACKJE:{
+                strcat (p_files->ProgrammCoded, "je ");
+                i++;
+                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                {
+                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    {
+                        char numoflabel[5] = "";
+                        strcat (p_files->ProgrammCoded, ":");
+                        strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                        strcat (p_files->ProgrammCoded, "\n");
+                    }
+                }
+                break;
+                }    
+            case STACKJNE:{
+                strcat (p_files->ProgrammCoded, "jne ");
+                i++;
+                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                {
+                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    {
+                        char numoflabel[5] = "";
+                        strcat (p_files->ProgrammCoded, ":");
+                        strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                        strcat (p_files->ProgrammCoded, "\n");
+                    }
+                }
+                break;
+                } 
+            case STACKRPUSH:{
+                strcat (p_files->ProgrammCoded, "push ");
+                i++;
 
-            i++;
-            char num_str[15] = " ";
-            strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
-            strcat (p_files->ProgrammCoded, "\n");
-            num_str[0] = '\0';
+                if (p_files->allProgramm[i] == 1)
+                {
+                    strcat (p_files->ProgrammCoded, "ax\n");
+                } else if (p_files->allProgramm[i] == 2) {
+                    strcat (p_files->ProgrammCoded, "bx\n");
+                } else if (p_files->allProgramm[i] == 3) {
+                    strcat (p_files->ProgrammCoded, "cx\n");
+                } else if (p_files->allProgramm[i] == 4) {
+                    strcat (p_files->ProgrammCoded, "dx\n");
+                }
+                break;
+                }
+            case STACKRPOP:{ 
+                strcat (p_files->ProgrammCoded, "pop ");
+                i++;
+
+                if (p_files->allProgramm[i] == 1)
+                {
+                    strcat (p_files->ProgrammCoded, "ax\n");
+                } else if (p_files->allProgramm[i] == 2) {
+                    strcat (p_files->ProgrammCoded, "bx\n");
+                } else if (p_files->allProgramm[i] == 3) {
+                    strcat (p_files->ProgrammCoded, "cx\n");
+                } else if (p_files->allProgramm[i] == 4) {
+                    strcat (p_files->ProgrammCoded, "dx\n");
+                }
+                break; 
+                } 
+            case STACKCALL:{
+                strcat (p_files->ProgrammCoded, "call ");
+                i++;
+                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                {
+                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    {
+                        char numoflabel[5] = "";
+                        strcat (p_files->ProgrammCoded, ":");
+                        strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
+                        strcat (p_files->ProgrammCoded, "\n");
+                    }
+                }
+                break; 
+                }
+            case STACKRET:
+                strcat (p_files->ProgrammCoded, "ret\n");
+                break;  
+            case STACKIN: 
+                strcat (p_files->ProgrammCoded, "in\n");
+                break;  
+            default:
+                printf("ERROR: NO THIS COMMAND");
+                break;
         }
-        else if (p_files->allProgramm[i] == STACKJB)
-        {
-            strcat (p_files->ProgrammCoded, "jb ");
-
-            i++;
-            char num_str[15] = " ";
-            strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
-            strcat (p_files->ProgrammCoded, "\n");
-            num_str[0] = '\0';
-        }
-        else if (p_files->allProgramm[i] == STACKJBE)
-        {
-            strcat (p_files->ProgrammCoded, "jbe ");
-
-            i++;
-            char num_str[15] = " ";
-            strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
-            strcat (p_files->ProgrammCoded, "\n");
-            num_str[0] = '\0';
-        }
-        else if (p_files->allProgramm[i] == STACKJA)
-        {
-            strcat (p_files->ProgrammCoded, "ja ");
-
-            i++;
-            char num_str[15] = " ";
-            strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
-            strcat (p_files->ProgrammCoded, "\n");
-            num_str[0] = '\0';
-        }
-        else if (p_files->allProgramm[i] == STACKJAE)
-        {
-            strcat (p_files->ProgrammCoded, "jae ");
-
-            i++;
-            char num_str[15] = " ";
-            strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
-            strcat (p_files->ProgrammCoded, "\n");
-            num_str[0] = '\0';
-        }
-        else if (p_files->allProgramm[i] == STACKJE)
-        {
-            strcat (p_files->ProgrammCoded, "je ");
-
-            i++;
-            char num_str[15] = " ";
-            strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
-            strcat (p_files->ProgrammCoded, "\n");
-            num_str[0] = '\0';
-        }    
-        else if (p_files->allProgramm[i] == STACKJNE)
-        {
-            strcat (p_files->ProgrammCoded, "jne ");
-
-            i++;
-            char num_str[15] = " ";
-            strcat (p_files->ProgrammCoded, inttoa(p_files->allProgramm[i], num_str));
-            strcat (p_files->ProgrammCoded, "\n");
-            num_str[0] = '\0';
-        }    
     }
-    strcat(p_files->ProgrammCoded, "\0");
 }
 
 char* inttoa(int n, char* s)

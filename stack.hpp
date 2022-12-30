@@ -8,6 +8,8 @@ typedef int type;
 
 #define MAXNUMBEROFFILENAME 160
 
+#define MAXRECCURSIONINFUNC 1000
+
 #define DBG printf("FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__);
 
 struct registers 
@@ -20,13 +22,6 @@ struct registers
 
     int dx = 0;
 };
-
-// struct cpu
-// {
-//     struct stack mystack;
-//     struct stack functstack;
-//     struct registers regs;
-// };//структуру процессора{stack, regs, оперативка}
 
 struct stack 
 {
@@ -44,6 +39,14 @@ struct stack
 
     struct registers regs;
 };
+
+struct cpu
+{
+    struct stack mystack;
+    struct stack functstack;
+    // struct registers regs;
+};//структуру процессора{stack, regs, оперативка}
+
 
 enum commands
 {
@@ -68,7 +71,8 @@ enum commands
     STACKRPUSH = 18,
     STACKRPOP  = 19, 
     STACKCALL  = 20,
-    STACKRET   = 21
+    STACKRET   = 21,
+    STACKIN    = 22
 };
 
 enum Errors
@@ -81,14 +85,16 @@ enum Errors
     ERR_DIVIDE_ON_ZERO = 32
 };
 
+void cpuInit (struct cpu* mycpu);
+
 void StackInit (struct stack* p_stack);
 
 void StackDelete (struct stack* p_stack);
 
 void StackCheck(struct stack* p_stack);
 
-void StackRead (struct stack* p_stack);
+void StackRead (struct cpu* mycpu, struct stack* p_stack);
 
-void StackDestructor(struct stack* p_stack);
+void StackDestructor(struct cpu* mycpu, struct stack* p_stack);
 
 int lenFile(FILE *text);

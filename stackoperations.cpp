@@ -22,10 +22,13 @@ void pushr(struct stack* p_stack, int indeficator)
         push(p_stack, p_stack->regs.cx);
     } else if (indeficator == 4) {
         push(p_stack, p_stack->regs.dx);
-    } 
+    } else {
+        printf ("Error: Link to non-existent register\n");
+        exit (0);
+    }
 
     StackCheck (p_stack);
-}//добавить ошибку если обращаются на несуществующий индефикатор
+}
 
 type pop (struct stack* p_stack)
 {
@@ -44,22 +47,31 @@ type pop (struct stack* p_stack)
 type popr (struct stack* p_stack, int indeficator)
 {
     StackCheck (p_stack);
-    
-    if (indeficator == 1)
+
+    switch (indeficator)
     {
-        p_stack->regs.ax = pop(p_stack);
-    } else if (indeficator == 2) {
-        p_stack->regs.bx = pop(p_stack);
-    } else if (indeficator == 3) {
-        p_stack->regs.cx = pop(p_stack);
-    } else if (indeficator == 4) {
-        p_stack->regs.dx = pop(p_stack);
-    } 
+        case (1):
+            p_stack->regs.ax = pop(p_stack);
+            break;
+        case (2):
+            p_stack->regs.bx = pop(p_stack);
+            break;
+        case (3):
+            p_stack->regs.cx = pop(p_stack);
+            break;
+        case (4):
+            p_stack->regs.dx = pop(p_stack);
+            break;
+        default:
+            printf ("Error: Link to non-existent register\n");
+            exit (0);
+            break;
+    }
 
     StackCheck (p_stack);
 
     return 1;
-}//switch-case
+}
 
 void add (struct stack* p_stack)
 {
@@ -272,22 +284,29 @@ void jne (struct stack* p_stack, int i)
     StackCheck (p_stack);
 }
 
-// void call (struct stack* p_stack, int i)
-// {
-//     StackCheck (p_stack);
+void call (struct cpu* mycpu, int i)
+{
+    printf ("CUR:%d, JUMP:%d", mycpu->mystack.cur, i - 1);
+    push (&mycpu->functstack, mycpu->mystack.cur);
+    jump (&mycpu->mystack, i - 1);
+}
 
-//     p_stack->cur = i;
+void ret (struct cpu* mycpu)
+{
+    StackCheck (&mycpu->mystack);
+    int a = pop (&mycpu->functstack);
+    jump (&mycpu->mystack, a);
+    StackCheck (&mycpu->mystack);
+}
 
-//     StackCheck (p_stack);
-// }
-
-// void ret (struct stack* cpu);
-// {
-//     StackCheck (cpu->p_stack);
-//     int a = pop (funct_stack);
-//     jump (p_stack, a);
-//     StackCheck (p_stack);
-// }
+void in (struct cpu* mycpu)
+{
+    type value = 0;
+    StackCheck (&mycpu->mystack);
+    scanf ("%d", &value);
+    push (&mycpu->mystack, value);
+    StackCheck (&mycpu->mystack);
+}
 
 void hlt (struct stack* p_stack)
 {

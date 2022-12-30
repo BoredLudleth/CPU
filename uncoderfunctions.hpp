@@ -4,6 +4,7 @@
 #include <ctype.h>
 
 #define MAXNUMBEROFFILENAME 160
+#define NUMBEROFLABELS 10
 
 #define DBG printf("FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__);
 
@@ -29,6 +30,7 @@ struct inputOutputFiles
     int length_input;
     int* allProgramm;
     char* ProgrammCoded;
+    int labels[NUMBEROFLABELS];
 };
 
 enum commands
@@ -50,7 +52,12 @@ enum commands
     STACKJA    = 14,
     STACKJAE   = 15,
     STACKJE    = 16,
-    STACKJNE   = 17
+    STACKJNE   = 17,
+    STACKRPUSH = 18,
+    STACKRPOP  = 19, 
+    STACKCALL  = 20,
+    STACKRET   = 21,
+    STACKIN    = 22
 };
 
 void CoderInit (struct inputOutputFiles* p_files);
@@ -60,6 +67,8 @@ int lenFile(FILE *text);
 char* inttoa(int n, char* s);
 
 void reverse(char* s);
+
+void PreCoding (struct inputOutputFiles* p_files);
 
 void Coding (struct inputOutputFiles* p_files);
 

@@ -36,4 +36,10 @@ void je (struct stack* p_stack, int i);
 
 void jne (struct stack* p_stack, int i);
 
+void call (struct cpu* mycpu, int i);
+
+void in (struct cpu* mycpu);
+
+void ret (struct cpu* cpu);
+
 void hlt (struct stack* p_stack);

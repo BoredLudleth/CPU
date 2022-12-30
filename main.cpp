@@ -2,11 +2,10 @@
 
 int main () 
 {
-    struct stack stack = {};
-    struct stack* p_stack = &stack;
+    struct cpu mycpu = {};
 
-    StackInit(p_stack);
-    StackRead(p_stack);
+    cpuInit(&mycpu);
+    StackRead(&mycpu, &mycpu.mystack);
 
     return 0;
-}
+}// добавить in и sqrt

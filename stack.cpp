@@ -1,5 +1,23 @@
 #include "stackoperations.hpp"
 
+void cpuInit (struct cpu* mycpu)
+{
+    StackInit (&mycpu->mystack);
+    mycpu->functstack.data = (type*) calloc (MAXRECCURSIONINFUNC + 2, sizeof(type));
+    mycpu->functstack.lengthStack = MAXRECCURSIONINFUNC;
+    int* temp_p = (int*) (mycpu->functstack.data);
+    temp_p[0] = CANARY_VALUE;
+    mycpu->functstack.data = (type*) (temp_p + 1);
+
+    temp_p = (int*)(mycpu->functstack.data) + (mycpu->functstack.lengthStack);
+    temp_p[0] = CANARY_VALUE;
+
+    mycpu->functstack.canary_1 = CANARY_VALUE;
+    mycpu->functstack.canary_2 = CANARY_VALUE; 
+
+}
+
+
 void StackInit (struct stack* p_stack) 
 {
     char inputName[MAXNUMBEROFFILENAME] = " ";
@@ -68,10 +86,11 @@ void StackCheck (struct stack* p_stack)
     }
 }
 
-void StackRead (struct stack* p_stack)
+void StackRead (struct cpu* mycpu, struct stack* p_stack)
 {
     for (p_stack->cur = 0; p_stack->cur < p_stack->sizeOfProgramm; p_stack->cur++)
     {
+        printf("line: %d\n", p_stack->cur);
         if (p_stack->allProgramm[p_stack->cur] == STACKPUSH)
         {
             p_stack->cur++;
@@ -141,12 +160,13 @@ void StackRead (struct stack* p_stack)
             p_stack->cur++;
             int reg = p_stack->allProgramm[p_stack->cur];
             popr(p_stack, reg);
-        // } else if (p_stack->allProgramm[p_stack->cur] == STACKCALL) {
-        //     p_stack->cur++;
-        //     int reg = p_stack->allProgramm[p_stack->cur];
-        //     call (p_stack, reg);
-        // } else if (p_stack->allProgramm[p_stack->cur] == STACKRET) {
-            // ret (p_stack);
+        } else if (p_stack->allProgramm[p_stack->cur] == STACKCALL) {
+            p_stack->cur++;
+            call (mycpu, p_stack->allProgramm[p_stack->cur]);
+        } else if (p_stack->allProgramm[p_stack->cur] == STACKRET) {
+            ret (mycpu);
+        } else if (p_stack->allProgramm[p_stack->cur] == STACKIN) {
+            in (mycpu);
         } else {
             printf("Undefined comand. Try again.\n");
             break;
@@ -157,12 +177,14 @@ void StackRead (struct stack* p_stack)
     }
 
     p_stack->allProgramm -= p_stack->sizeOfProgramm;
+    StackDestructor (mycpu, p_stack);
 }
 
-void StackDestructor(struct stack* p_stack)
+void StackDestructor (struct cpu* mycpu, struct stack* p_stack)
 {
-    fclose(p_stack->inputFile);
-    free(p_stack->allProgramm);
+    fclose (p_stack->inputFile);
+    free (p_stack->allProgramm);
+    free (mycpu->mystack.data);
 }
 
 int lenFile(FILE *text)

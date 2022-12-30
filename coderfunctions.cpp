@@ -68,8 +68,10 @@ void PreCoding (struct inputOutputFiles* p_files)
             if (checkNumber(command + 1) && atoi(command + 1) < NUMBEROFLABELS)
             {
                 if (p_files->labels[atoi(command + 1)] == -1)
+                {
                     p_files->labels[atoi(command + 1)] = curcommand;
-                else
+                    curcommand--;
+                }else
                     printf ("problem with label\n");
             }
             else
@@ -500,8 +502,16 @@ void Coding (struct inputOutputFiles* p_files)
 
             skipSpaces(p_files);
 
-            strcat(p_files->ProgrammCoded, "20");
+            strcat(p_files->ProgrammCoded, "21");
             p_files->allProgramm += 3;
+        } else if (!strcmp (command, "in")) {
+            p_files->commandsValue[i] = STACKIN;
+            i++;
+
+            skipSpaces(p_files);
+
+            strcat(p_files->ProgrammCoded, "22");
+            p_files->allProgramm += 2;
         }
         else
         {

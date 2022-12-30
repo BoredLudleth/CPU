@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -Wall	
 
-all: run_coder run_stack
+all: run_coder run_stack run_uncoder
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp -o main.o
