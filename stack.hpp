@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
+#include <math.h>
 
 typedef int type;
 #define TYPE_SPECIFIER "%d"
@@ -72,7 +73,8 @@ enum commands
     STACKRPOP  = 19, 
     STACKCALL  = 20,
     STACKRET   = 21,
-    STACKIN    = 22
+    STACKIN    = 22,
+    STACKSQRT  = 23
 };
 
 enum Errors

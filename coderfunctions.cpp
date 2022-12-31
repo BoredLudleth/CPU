@@ -31,6 +31,13 @@ void CoderInit (struct inputOutputFiles* p_files)
     {
         p_files->labels[i] = -1;
     }
+
+    p_files->t_reg = (struct textregs*) calloc (NUMBEROFTEXTLABELS, sizeof(struct textregs));
+    for (int i = 0; i < NUMBEROFLABELS; i++)
+    {
+        p_files->t_reg[i].reg_value = -1;
+    }
+    
 }
 
 int lenFile(FILE *text)
@@ -73,11 +80,21 @@ void PreCoding (struct inputOutputFiles* p_files)
                     curcommand--;
                 }else
                     printf ("problem with label\n");
-            }
-            else
-            {
+            } else if (atoi (command + 1) == 0){
+                for (int i = 0; i < NUMBEROFTEXTLABELS; i++)
+                {
+                    if (p_files->t_reg[i].reg_value == -1)
+                    {
+                        strcat (command, "\0");
+                        strcpy (p_files->t_reg[i].reg_name, command + 1);
+                        p_files->t_reg[i].reg_value = curcommand;
+                        break;
+                    }
+                }
+                curcommand--;
+            } else if (atoi (command + 1) < NUMBEROFLABELS) {
                 printf ("problem with label\n");
-            }
+            } 
         }
         p_files->allProgramm += strlen (command);
     }
@@ -324,11 +341,22 @@ void Coding (struct inputOutputFiles* p_files)
                 strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(jumpValue + 1)], s));
 
                 p_files->commandsValue[i] = p_files->labels[atoi(jumpValue + 1)];
-                i++;
             } else {
-                p_files->numberOfErrors++;
-                printf("ERR_RUB:Undefined command in line %d\n", p_files->currentLine);
+                for (int k = 0; k < NUMBEROFTEXTLABELS; k++)
+                {
+                    if (!strcmp(&jumpValue[1], p_files->t_reg[k].reg_name))
+                    {
+                        p_files->commandsValue[i] = p_files->t_reg[k].reg_value;
+                        char num[10] = "";
+                        strcat(p_files->ProgrammCoded, inttoa(p_files->t_reg[k].reg_value, num));
+                        k = NUMBEROFTEXTLABELS;
+                    } else if (k == NUMBEROFTEXTLABELS - 1) {
+                        printf ("JUMP:ERROR IN TEXT LABEL\n");
+                        p_files->numberOfErrors++;
+                    }
+                }
             }
+            i++;
         } else if (!strcmp(command, "jb")) {
             p_files->commandsValue[i] = STACKJB;
             i++;
@@ -347,11 +375,22 @@ void Coding (struct inputOutputFiles* p_files)
                 strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(jumpValue + 1)], s));
 
                 p_files->commandsValue[i] = p_files->labels[atoi(jumpValue + 1)];
-                i++;
             } else {
-                p_files->numberOfErrors++;
-                printf("Undefined command in line %d\n", p_files->currentLine);
+                for (int k = 0; k < NUMBEROFTEXTLABELS; k++)
+                {
+                    if (!strcmp(&jumpValue[1], p_files->t_reg[k].reg_name))
+                    {
+                        p_files->commandsValue[i] = p_files->t_reg[k].reg_value;
+                        char num[10] = "";
+                        strcat(p_files->ProgrammCoded, inttoa(p_files->t_reg[k].reg_value, num));
+                        k = NUMBEROFTEXTLABELS;
+                    } else if (k == NUMBEROFTEXTLABELS - 1) {
+                        printf ("JB:ERROR IN TEXT LABEL\n");
+                        p_files->numberOfErrors++;
+                    }
+                }
             }
+            i++;
         } else if (!strcmp(command, "jbe")) {
             p_files->commandsValue[i] = STACKJBE;
             i++;
@@ -370,11 +409,22 @@ void Coding (struct inputOutputFiles* p_files)
                 strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(jumpValue + 1)], s));
 
                 p_files->commandsValue[i] = p_files->labels[atoi(jumpValue + 1)];
-                i++;
             } else {
-                p_files->numberOfErrors++;
-                printf("Undefined command in line %d\n", p_files->currentLine);
+                for (int k = 0; k < NUMBEROFTEXTLABELS; k++)
+                {
+                    if (!strcmp(&jumpValue[1], p_files->t_reg[k].reg_name))
+                    {
+                        p_files->commandsValue[i] = p_files->t_reg[k].reg_value;
+                        char num[10] = "";
+                        strcat(p_files->ProgrammCoded, inttoa(p_files->t_reg[k].reg_value, num));
+                        k = NUMBEROFTEXTLABELS;
+                    } else if (k == NUMBEROFTEXTLABELS - 1) {
+                        printf ("JBE:ERROR IN TEXT LABEL\n");
+                        p_files->numberOfErrors++;
+                    }
+                }
             }
+            i++;
         } else if (!strcmp(command, "ja")) {
             p_files->commandsValue[i] = STACKJA;
             i++;
@@ -393,11 +443,22 @@ void Coding (struct inputOutputFiles* p_files)
                 strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(jumpValue + 1)], s));
 
                 p_files->commandsValue[i] = p_files->labels[atoi(jumpValue + 1)];
-                i++;
             } else {
-                p_files->numberOfErrors++;
-                printf("Undefined command in line %d\n", p_files->currentLine);
+                for (int k = 0; k < NUMBEROFTEXTLABELS; k++)
+                {
+                    if (!strcmp(&jumpValue[1], p_files->t_reg[k].reg_name))
+                    {
+                        p_files->commandsValue[i] = p_files->t_reg[k].reg_value;
+                        char num[10] = "";
+                        strcat(p_files->ProgrammCoded, inttoa(p_files->t_reg[k].reg_value, num));
+                        k = NUMBEROFTEXTLABELS;
+                    } else if (k == NUMBEROFTEXTLABELS - 1) {
+                        printf ("JA:ERROR IN TEXT LABEL\n");
+                        p_files->numberOfErrors++;
+                    }
+                }
             }
+            i++;
         } else if (!strcmp(command, "jae")) {
             p_files->commandsValue[i] = STACKJAE;
             i++;
@@ -416,11 +477,22 @@ void Coding (struct inputOutputFiles* p_files)
                 strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(jumpValue + 1)], s));
 
                 p_files->commandsValue[i] = p_files->labels[atoi(jumpValue + 1)];
-                i++;
             } else {
-                p_files->numberOfErrors++;
-                printf("LABEL:Undefined command in line %d\n", p_files->currentLine);
+                for (int k = 0; k < NUMBEROFTEXTLABELS; k++)
+                {
+                    if (!strcmp(&jumpValue[1], p_files->t_reg[k].reg_name))
+                    {
+                        p_files->commandsValue[i] = p_files->t_reg[k].reg_value;
+                        char num[10] = "";
+                        strcat(p_files->ProgrammCoded, inttoa(p_files->t_reg[k].reg_value, num));
+                        k = NUMBEROFTEXTLABELS;
+                    } else if (k == NUMBEROFTEXTLABELS - 1) {
+                        printf ("JAE:ERROR IN TEXT LABEL\n");
+                        p_files->numberOfErrors++;
+                    }
+                }
             }
+            i++;
         } else if (!strcmp(command, "je")) {
             p_files->commandsValue[i] = STACKJE;
             i++;
@@ -439,11 +511,22 @@ void Coding (struct inputOutputFiles* p_files)
                 strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(jumpValue + 1)], s));
 
                 p_files->commandsValue[i] = p_files->labels[atoi(jumpValue + 1)];
-                i++;
             } else {
-                p_files->numberOfErrors++;
-                printf("Undefined command in line %d\n", p_files->currentLine);
+                for (int k = 0; k < NUMBEROFTEXTLABELS; k++)
+                {
+                    if (!strcmp(&jumpValue[1], p_files->t_reg[k].reg_name))
+                    {
+                        p_files->commandsValue[i] = p_files->t_reg[k].reg_value;
+                        char num[10] = "";
+                        strcat(p_files->ProgrammCoded, inttoa(p_files->t_reg[k].reg_value, num));
+                        k = NUMBEROFTEXTLABELS;
+                    } else if (k == NUMBEROFTEXTLABELS - 1) {
+                        printf ("JE:ERROR IN TEXT LABEL\n");
+                        p_files->numberOfErrors++;
+                    }
+                }
             }
+            i++;
         } else if (!strcmp(command, "jne")) {
             p_files->commandsValue[i] = STACKJNE;
             i++;
@@ -462,16 +545,23 @@ void Coding (struct inputOutputFiles* p_files)
                 strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(jumpValue + 1)], s));
 
                 p_files->commandsValue[i] = p_files->labels[atoi(jumpValue + 1)];
-                i++;
             } else {
-                p_files->numberOfErrors++;
-                printf("Undefined command in line %d\n", p_files->currentLine);
+                for (int k = 0; k < NUMBEROFTEXTLABELS; k++)
+                {
+                    if (!strcmp(&jumpValue[1], p_files->t_reg[k].reg_name))
+                    {
+                        p_files->commandsValue[i] = p_files->t_reg[k].reg_value;
+                        char num[10] = "";
+                        strcat(p_files->ProgrammCoded, inttoa(p_files->t_reg[k].reg_value, num));
+                        k = NUMBEROFTEXTLABELS;
+                    } else if (k == NUMBEROFTEXTLABELS - 1) {
+                        printf ("JNE:ERROR IN TEXT LABEL\n");
+                        p_files->numberOfErrors++;
+                    }
+                }
             }
+            i++;
         } else if (command[0] == ':'){
-            if (!checkNumber(command + 1) || !(atoi(command + 1) < NUMBEROFLABELS))
-            {
-                printf("Undefined command in line %d\n", p_files->currentLine);
-            }
             p_files->allProgramm = strchr(p_files->allProgramm, '\n');
         } else if (!strcmp(command, "call")) {
             p_files->commandsValue[i] = STACKCALL;
@@ -481,21 +571,33 @@ void Coding (struct inputOutputFiles* p_files)
             p_files->allProgramm += 4;
             skipSpaces (p_files);
 
-            char callValue[10] = " ";
+            char callValue[10] = "";
             sscanf (p_files->allProgramm, "%s", callValue);
             p_files->allProgramm += strlen (callValue);
+            callValue[strlen(callValue)] =  '\0';
 
             if (callValue[0] == ':' && checkNumber(callValue + 1))
             {
-                char s[10] = " ";
+                char s[10] = "";
                 strcat (p_files->ProgrammCoded, inttoa(p_files->labels[atoi(callValue + 1)], s));
 
                 p_files->commandsValue[i] = p_files->labels[atoi(callValue + 1)];
-                i++;
             } else {
-                p_files->numberOfErrors++;
-                printf("ERR_RUB:Undefined command in line %d\n", p_files->currentLine);
+                for (int k = 0; k < NUMBEROFTEXTLABELS; k++)
+                {
+                    if (strcmp(&callValue[1], p_files->t_reg[k].reg_name) == 0)
+                    {
+                        p_files->commandsValue[i] = p_files->t_reg[k].reg_value;
+                        char num[10] = "";
+                        strcat(p_files->ProgrammCoded, inttoa(p_files->t_reg[k].reg_value, num));
+                        k = NUMBEROFTEXTLABELS;
+                    } else if (k == NUMBEROFTEXTLABELS - 1) {
+                        printf ("CALL:ERROR IN TEXT LABEL\n");
+                        p_files->numberOfErrors++;
+                    }
+                }
             }
+            i++;
         } else if (!strcmp (command, "ret")) {
             p_files->commandsValue[i] = STACKRET;
             i++;
@@ -512,6 +614,14 @@ void Coding (struct inputOutputFiles* p_files)
 
             strcat(p_files->ProgrammCoded, "22");
             p_files->allProgramm += 2;
+        } else if (!strcmp (command, "sqrt")) {
+            p_files->commandsValue[i] = STACKSQRT;
+            i++;
+
+            skipSpaces(p_files);
+
+            strcat(p_files->ProgrammCoded, "23");
+            p_files->allProgramm += 4;
         }
         else
         {
@@ -576,6 +686,7 @@ void OutputResults (struct inputOutputFiles* p_files)
 
 void Destructor (struct inputOutputFiles* p_files)
 {
+    free (p_files->t_reg);
     free (p_files->commandsValue);
     free (p_files->allProgramm);
     free (p_files->ProgrammCoded);

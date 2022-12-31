@@ -34,4 +34,4 @@ run_stack: main.o stack.o stackoperations.o
 	$(CC) main.o stack.o stackoperations.o -o run_stack
 
 clean:
-	rm *.o *.exe *.stackdump
+	rm *.o *.exe *.stackdump *.code *.bin

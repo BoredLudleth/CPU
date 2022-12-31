@@ -116,8 +116,9 @@ void div (struct stack* p_stack)
 
 void out (struct stack* p_stack)
 {
-    printf(TYPE_SPECIFIER, pop(p_stack));
-    printf("\n");
+    printf ("out:");
+    printf (TYPE_SPECIFIER, pop(p_stack));
+    printf ("\n");
 }
 
 void print (struct stack stack)
@@ -286,9 +287,8 @@ void jne (struct stack* p_stack, int i)
 
 void call (struct cpu* mycpu, int i)
 {
-    printf ("CUR:%d, JUMP:%d", mycpu->mystack.cur, i - 1);
     push (&mycpu->functstack, mycpu->mystack.cur);
-    jump (&mycpu->mystack, i - 1);
+    jump (&mycpu->mystack, i);
 }
 
 void ret (struct cpu* mycpu)
@@ -306,6 +306,20 @@ void in (struct cpu* mycpu)
     scanf ("%d", &value);
     push (&mycpu->mystack, value);
     StackCheck (&mycpu->mystack);
+}
+
+void sqr (struct cpu* cpu)
+{
+    StackCheck (&cpu->mystack);
+    type x = pop (&cpu->mystack);
+    if (x < 0)
+    {
+        printf ("ERROR: SQRT from number less 0");
+        hlt (&cpu->mystack);
+    }
+    x = sqrt(x);
+    push (&cpu->mystack, x);
+    StackCheck (&cpu->mystack);
 }
 
 void hlt (struct stack* p_stack)

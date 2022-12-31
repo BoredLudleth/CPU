@@ -42,4 +42,6 @@ void in (struct cpu* mycpu);
 
 void ret (struct cpu* cpu);
 
+void sqr (struct cpu* cpu);
+
 void hlt (struct stack* p_stack);

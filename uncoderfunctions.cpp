@@ -18,6 +18,7 @@ void CoderInit (struct inputOutputFiles* p_files)
 
     p_files->length_input = lenFile (p_files->input);
     p_files->allProgramm = (int*) calloc (p_files->length_input, sizeof(int));
+
     fread (p_files->allProgramm, sizeof(int), (size_t) (p_files->length_input), p_files->input);
     p_files->ProgrammCoded = (char*) calloc (8 * p_files->length_input, sizeof(char));
 }
@@ -32,9 +33,9 @@ int lenFile(FILE *text)
 }
 void PreCoding (struct inputOutputFiles* p_files)
 {
-    for (int i = 1; i <= NUMBEROFLABELS; i++)
+    for (int i = 1; i < NUMBEROFLABELS; i++)
     {
-        p_files->labels[i - 1] = 0;
+        p_files->labels[i] = -1;
     }
     for (int i = 0; i < p_files->length_input; i++)
     {
@@ -48,17 +49,22 @@ void PreCoding (struct inputOutputFiles* p_files)
             p_files->allProgramm[i] == STACKJAE  || p_files->allProgramm[i] == STACKJE   ||
             p_files->allProgramm[i] == STACKJNE  || p_files->allProgramm[i] == STACKCALL) 
             {
+                printf("%d - %d\n", p_files->allProgramm[i], i);
                 i++;
-                int numoflabel = 1;
-                while (numoflabel <= NUMBEROFLABELS)
+                for (int numoflabel = 1; numoflabel < NUMBEROFLABELS; numoflabel++)
                 {
-                    if (p_files->labels[i - 1] == 0)
+                    if (p_files->labels[numoflabel] == -1)
                     {
-                        p_files->labels[i - 1] = p_files->allProgramm[i];
+                        p_files->labels[numoflabel] = p_files->allProgramm[i];
+                        printf("%d - %d\n", p_files->allProgramm[i], i);
                         break;
                     }
                 }
             }
+    }
+    for (int i = 0; i < NUMBEROFLABELS; i++)
+    {
+        printf ("%d - %d\n", i, p_files->labels[i]);
     }
 }
 
@@ -66,18 +72,21 @@ void Coding (struct inputOutputFiles* p_files)
 {
     for (int i = 0, line = 0; i < p_files->length_input; i++, line++)
     {
-        for (int j = 1; j <= NUMBEROFLABELS; j++)
+        for (int j = 1; j < NUMBEROFLABELS; j++)
         {
-            if (p_files->labels[j - 1] == i && i != 0)
+            if (p_files->labels[j] == i)
             {
                 char numoflabel[5] = "";
                 strcat (p_files->ProgrammCoded, ":");
                 strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                 strcat (p_files->ProgrammCoded, "\n");
+                break;
             }
         }
         switch (p_files->allProgramm[i])
         {
+            case 0:
+                break;
             case STACKPUSH:{ 
                 strcat(p_files->ProgrammCoded, "push ");
                 i++;
@@ -117,14 +126,15 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKJUMP:{ 
                 strcat (p_files->ProgrammCoded, "jump ");
                 i++;
-                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                for (int j = 1; j < NUMBEROFLABELS; j++)
                 {
-                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    if (p_files->labels[j] == p_files->allProgramm[i])
                     {
                         char numoflabel[5] = "";
                         strcat (p_files->ProgrammCoded, ":");
                         strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                         strcat (p_files->ProgrammCoded, "\n");
+                        break;
                     }
                 }
                 break;
@@ -132,14 +142,15 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKJB:{ 
                 strcat (p_files->ProgrammCoded, "jb ");
                 i++;
-                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                for (int j = 1; j < NUMBEROFLABELS; j++)
                 {
-                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    if (p_files->labels[j] == p_files->allProgramm[i])
                     {
                         char numoflabel[5] = "";
                         strcat (p_files->ProgrammCoded, ":");
                         strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                         strcat (p_files->ProgrammCoded, "\n");
+                        break;
                     }
                 }
                 break; 
@@ -147,14 +158,15 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKJBE:{
                 strcat (p_files->ProgrammCoded, "jbe ");
                 i++;
-                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                for (int j = 1; j < NUMBEROFLABELS; j++)
                 {
-                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    if (p_files->labels[j] == p_files->allProgramm[i])
                     {
                         char numoflabel[5] = "";
                         strcat (p_files->ProgrammCoded, ":");
                         strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                         strcat (p_files->ProgrammCoded, "\n");
+                        break;
                     }
                 }
                 break;
@@ -162,14 +174,15 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKJA:{
                 strcat (p_files->ProgrammCoded, "ja ");
                 i++;
-                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                for (int j = 1; j < NUMBEROFLABELS; j++)
                 {
-                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    if (p_files->labels[j] == p_files->allProgramm[i])
                     {
                         char numoflabel[5] = "";
                         strcat (p_files->ProgrammCoded, ":");
                         strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                         strcat (p_files->ProgrammCoded, "\n");
+                        break;
                     }
                 }
                 break;
@@ -177,14 +190,15 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKJAE:{                 
                 strcat (p_files->ProgrammCoded, "jae ");
                 i++;
-                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                for (int j = 1; j < NUMBEROFLABELS; j++)
                 {
-                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    if (p_files->labels[j] == p_files->allProgramm[i])
                     {
                         char numoflabel[5] = "";
                         strcat (p_files->ProgrammCoded, ":");
                         strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                         strcat (p_files->ProgrammCoded, "\n");
+                        break;
                     }
                 }
                 break; 
@@ -192,14 +206,15 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKJE:{
                 strcat (p_files->ProgrammCoded, "je ");
                 i++;
-                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                for (int j = 1; j < NUMBEROFLABELS; j++)
                 {
-                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    if (p_files->labels[j] == p_files->allProgramm[i])
                     {
                         char numoflabel[5] = "";
                         strcat (p_files->ProgrammCoded, ":");
                         strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                         strcat (p_files->ProgrammCoded, "\n");
+                        break;
                     }
                 }
                 break;
@@ -207,14 +222,15 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKJNE:{
                 strcat (p_files->ProgrammCoded, "jne ");
                 i++;
-                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                for (int j = 1; j < NUMBEROFLABELS; j++)
                 {
-                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    if (p_files->labels[j] == p_files->allProgramm[i])
                     {
                         char numoflabel[5] = "";
                         strcat (p_files->ProgrammCoded, ":");
                         strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                         strcat (p_files->ProgrammCoded, "\n");
+                        break;
                     }
                 }
                 break;
@@ -254,14 +270,15 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKCALL:{
                 strcat (p_files->ProgrammCoded, "call ");
                 i++;
-                for (int j = 1; j <= NUMBEROFLABELS; j++)
+                for (int j = 1; j < NUMBEROFLABELS; j++)
                 {
-                    if (p_files->labels[j - 1] == p_files->allProgramm[i])
+                    if (p_files->labels[j] == p_files->allProgramm[i])
                     {
                         char numoflabel[5] = "";
                         strcat (p_files->ProgrammCoded, ":");
                         strcat (p_files->ProgrammCoded, inttoa(j, numoflabel));
                         strcat (p_files->ProgrammCoded, "\n");
+                        break;
                     }
                 }
                 break; 
@@ -272,8 +289,11 @@ void Coding (struct inputOutputFiles* p_files)
             case STACKIN: 
                 strcat (p_files->ProgrammCoded, "in\n");
                 break;  
+            case STACKSQRT:
+                strcat (p_files->ProgrammCoded, "sqrt\n");
+                break;
             default:
-                printf("ERROR: NO THIS COMMAND");
+                printf("ERROR: NO THIS COMMAND\n");
                 break;
         }
     }

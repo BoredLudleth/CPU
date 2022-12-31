@@ -90,7 +90,6 @@ void StackRead (struct cpu* mycpu, struct stack* p_stack)
 {
     for (p_stack->cur = 0; p_stack->cur < p_stack->sizeOfProgramm; p_stack->cur++)
     {
-        printf("line: %d\n", p_stack->cur);
         if (p_stack->allProgramm[p_stack->cur] == STACKPUSH)
         {
             p_stack->cur++;
@@ -162,11 +161,13 @@ void StackRead (struct cpu* mycpu, struct stack* p_stack)
             popr(p_stack, reg);
         } else if (p_stack->allProgramm[p_stack->cur] == STACKCALL) {
             p_stack->cur++;
-            call (mycpu, p_stack->allProgramm[p_stack->cur]);
+            call (mycpu, p_stack->allProgramm[p_stack->cur] - 1);
         } else if (p_stack->allProgramm[p_stack->cur] == STACKRET) {
             ret (mycpu);
         } else if (p_stack->allProgramm[p_stack->cur] == STACKIN) {
             in (mycpu);
+        } else if (p_stack->allProgramm[p_stack->cur] == STACKSQRT) {
+            sqr (mycpu);
         } else {
             printf("Undefined comand. Try again.\n");
             break;

@@ -9,6 +9,10 @@
 
 #define NUMBEROFLABELS 10
 
+#define NUMBEROFTEXTLABELS 10
+
+#define LENGTHOFTEXTLABEL 160
+
 #define DBG printf("FILE:%s FUNC:%s LINE:%d\n", __FILE__, __FUNCTION__, __LINE__);
 
 #define DEBUG
@@ -46,6 +50,12 @@ struct registers
     int dx = 0;
 };
 
+struct textregs
+{
+    char reg_name[LENGTHOFTEXTLABEL] = "\0";
+    int reg_value = -1;
+};
+
 struct inputOutputFiles 
 {
     FILE* input;
@@ -67,6 +77,7 @@ struct inputOutputFiles
 
     int labels[NUMBEROFLABELS];
     struct registers reg;
+    struct textregs* t_reg;
 };
 
 struct token
@@ -100,7 +111,8 @@ enum commands
     STACKRPOP  = 19, 
     STACKCALL  = 20,
     STACKRET   = 21,
-    STACKIN    = 22
+    STACKIN    = 22, 
+    STACKSQRT   = 23
 };
 
 void CoderInit (struct inputOutputFiles* p_files);
