@@ -54,7 +54,7 @@ void StackDelete (struct stack* p_stack)
         p_stack->data[i] = 0;
     }
 
-    free(p_stack->data);
+    // free(p_stack->data);
 }
 
 void StackCheck (struct stack* p_stack) 
